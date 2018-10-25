@@ -12,6 +12,4 @@ ApplicationWindow {
         initialItem: ContactPage{}
     }
 
-    ContactPage {
-    }
 }

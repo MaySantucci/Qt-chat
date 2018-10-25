@@ -11,7 +11,7 @@ Page {
             anchors.centerIn: parent
         }
     }
-    
+
     ListView {
         id: listView
         anchors.fill: parent
@@ -20,21 +20,21 @@ Page {
         bottomMargin: 48
         rightMargin: 48
         spacing: 20
-        
+
         model: ["Albert Einstein", "Ernest Hemingway", "Hans Gude"]
         delegate: ItemDelegate {
             text: modelData
             width: listView.width - listView.leftMargin - listView.rightMargin
             height: avatar.implicitHeight
             leftPadding: avatar.implicitWidth + 32
-            
+            onClicked: root.StackView.view.push("qrc:/ConversationPage.qml", { inConversationWith: modelData })
+
+
             Image {
                 id: avatar
                 source: "qrc:/images/" + modelData.replace(" ", "_") + ".png"
             }
-
-            onClicked: console.log(text);
-        }
+         }
     }
 
 }

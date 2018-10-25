@@ -5,5 +5,6 @@
         <file>images/Ernest_Hemingway.png</file>
         <file>images/Hans_Gude.png</file>
         <file>ContactPage.qml</file>
+        <file>ConversationPage.qml</file>
     </qresource>
 </RCC>
