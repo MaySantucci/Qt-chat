@@ -1,6 +1,8 @@
-import QtQuick 2.9
+import QtQuick 2.6
 import QtQuick.Layouts 1.3
 import QtQuick.Controls 2.1
+
+import io.qt.examples.chattutorial 1.0
 
 Page {
     id: root
@@ -25,69 +27,88 @@ Page {
     }
 
     ColumnLayout {
-          anchors.fill: parent
+        anchors.fill: parent
 
-          ListView {
-              Layout.fillWidth: true
-              Layout.fillHeight: true
-              Layout.margins: pane.leftPadding + messageField.leftPadding
-              displayMarginBeginning: 40
-              displayMarginEnd: 40
-              verticalLayoutDirection: ListView.BottomToTop
-              spacing: 12
-              model: 10
-              delegate: Row {
-                  readonly property bool sentByMe: index % 2 == 0
+        ListView {
+            id: listView
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            Layout.margins: pane.leftPadding + messageField.leftPadding
+            displayMarginBeginning: 40
+            displayMarginEnd: 40
+            verticalLayoutDirection: ListView.BottomToTop
+            spacing: 12
+            model: SqlConversationModel {
+                recipient: inConversationWith
+            }
+            delegate: Column {
+                anchors.right: sentByMe ? parent.right : undefined
+                spacing: 6
 
-                  anchors.right: sentByMe ? parent.right : undefined
-                  spacing: 6
+                readonly property bool sentByMe: model.recipient !== "Me"
 
+                Row {
+                    id: messageRow
+                    spacing: 6
+                    anchors.right: sentByMe ? parent.right : undefined
 
-                  Rectangle {
-                      id: avatar
-                      width: height
-                      height: parent.height
-                      color: "grey"
-                      visible: !sentByMe
-                  }
+                    Image {
+                        id: avatar
+                        source: !sentByMe ? "qrc:/" + model.author.replace(" ", "_") + ".png" : ""
+                    }
 
-                  Rectangle {
-                      width: 80
-                      height: 40
-                      color: sentByMe ? "lightgrey" : "steelblue"
+                    Rectangle {
+                        width: Math.min(messageText.implicitWidth + 24,
+                            listView.width - (!sentByMe ? avatar.width + messageRow.spacing : 0))
+                        height: messageText.implicitHeight + 24
+                        color: sentByMe ? "lightgrey" : "steelblue"
 
-                      Label {
-                          anchors.centerIn: parent
-                          text: index
-                          color: sentByMe ? "black" : "white"
-                      }
-                  }
-              }
+                        Label {
+                            id: messageText
+                            text: model.message
+                            color: sentByMe ? "black" : "white"
+                            anchors.fill: parent
+                            anchors.margins: 12
+                            wrapMode: Label.Wrap
+                        }
+                    }
+                }
 
-              ScrollBar.vertical: ScrollBar {}
-          }
+                Label {
+                    id: timestampText
+                    text: Qt.formatDateTime(model.timestamp, "d MMM hh:mm")
+                    color: "lightgrey"
+                    anchors.right: sentByMe ? parent.right : undefined
+                }
+            }
 
-          Pane {
-              id: pane
-              Layout.fillWidth: true
+            ScrollBar.vertical: ScrollBar {}
+        }
 
-              RowLayout {
-                  width: parent.width
+        Pane {
+            id: pane
+            Layout.fillWidth: true
 
-                  TextArea {
-                      id: messageField
-                      Layout.fillWidth: true
-                      placeholderText: qsTr("Compose message")
-                      wrapMode: TextArea.Wrap
-                  }
+            RowLayout {
+                width: parent.width
 
-                  Button {
-                      id: sendButton
-                      text: qsTr("Send")
-                      enabled: messageField.length > 0
-                  }
-              }
-          }
-       }
+                TextArea {
+                    id: messageField
+                    Layout.fillWidth: true
+                    placeholderText: qsTr("Compose message")
+                    wrapMode: TextArea.Wrap
+                }
+
+                Button {
+                    id: sendButton
+                    text: qsTr("Send")
+                    enabled: messageField.length > 0
+                    onClicked: {
+                        listView.model.sendMessage(inConversationWith, messageField.text);
+                        messageField.text = "";
+                    }
+                }
+            }
+        }
     }
-
+}
