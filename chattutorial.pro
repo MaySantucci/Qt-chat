@@ -1,4 +1,4 @@
-QT += quick sql
+QT += quick sql quickcontrols2
 CONFIG += c++11
 
 # The following define makes your compiler emit warnings if you use
@@ -19,7 +19,7 @@ SOURCES += \
 
 RESOURCES += qml.qrc
 
-
+QT_QUICK_CONTROLS_CONF = /qtquickcontrols2.conf
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH =
 
