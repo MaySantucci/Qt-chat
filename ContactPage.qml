@@ -5,7 +5,6 @@ import io.qt.examples.chattutorial 1.0
 
 Page {
     id: root
-    anchors.fill: parent
     header: ToolBar {
         Label {
             text: qsTr("Contacts")

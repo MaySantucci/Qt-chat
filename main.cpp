@@ -4,6 +4,7 @@
 
 #include<QtSql/QSqlDatabase>
 #include <QtSql/QSqlError>
+#include <QDebug>
 #include "model/sqlcontactmodel.h"
 #include "model/sqlconversationmodel.h"
 
@@ -23,6 +24,7 @@ static void connectToDatabase()
 
     // Ensure that we have a writable location on all devices.
     const QString fileName = writeDir.absolutePath() + "/chat-database.sqlite3";
+    qDebug() << fileName;
     // When using the SQLite driver, open() will create the SQLite database if it doesn't exist.
     database.setDatabaseName(fileName);
     if (!database.open()) {
